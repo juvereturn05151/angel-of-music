@@ -30,6 +30,19 @@ button:disabled {
   opacity: 0.55;
 }
 
+.downloadLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  border: 1px solid #233b3a;
+  border-radius: 6px;
+  padding: 0.65rem 0.9rem;
+  color: #233b3a;
+  font-weight: 700;
+  text-decoration: none;
+}
+
 .shell {
   min-height: 100vh;
 }

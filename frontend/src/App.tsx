@@ -61,7 +61,20 @@ function validateBrief(brief: MusicBrief): string[] {
   return errors;
 }
 
-function AudioPlayer({ src }: { src: string }) {
+function trackDownloadName(job: GenerationJob): string {
+  const filename = job.track?.audio_filename;
+  if (filename) return filename;
+  const extension = job.track?.audio_url.endsWith(".mp3") ? "mp3" : "wav";
+  return `angel-of-music-${job.track?.track_id.slice(0, 8) ?? "track"}.${extension}`;
+}
+
+function AudioPlayer({
+  downloadName,
+  src
+}: {
+  downloadName: string;
+  src: string;
+}) {
   const player = useAudioPlayer(src);
   return (
     <section className="panel">
@@ -95,6 +108,9 @@ function AudioPlayer({ src }: { src: string }) {
             value={player.volume}
           />
         </label>
+        <a className="downloadLink" download={downloadName} href={src}>
+          Download Track
+        </a>
       </div>
     </section>
   );
@@ -475,7 +491,9 @@ export function App() {
           </section>
         ) : null}
 
-        {trackSrc ? <AudioPlayer src={trackSrc} /> : null}
+        {trackSrc && job ? (
+          <AudioPlayer downloadName={trackDownloadName(job)} src={trackSrc} />
+        ) : null}
 
         {provenance ? (
           <section className="panel wide">

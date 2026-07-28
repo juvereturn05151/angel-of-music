@@ -59,6 +59,7 @@ function installHappyFetch() {
       job_id: "job-1",
       duration_seconds: 14,
       audio_url: "/api/tracks/track-1/audio",
+      audio_filename: "track-1.mp3",
       audio_sha256: "b".repeat(64),
       created_at: "2026-07-28T00:00:01Z"
     }
@@ -137,6 +138,10 @@ describe("App", () => {
     await user.click(await screen.findByRole("button", { name: /Generate Track/i }));
 
     expect(await screen.findByText("Track Result")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Download Track" })).toHaveAttribute(
+      "download",
+      "track-1.mp3"
+    );
     const play = screen.getByRole("button", { name: "Play" });
     await user.click(play);
     await user.click(play);

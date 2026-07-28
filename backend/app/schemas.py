@@ -147,6 +147,7 @@ class GeneratedTrack(BaseModel):
     job_id: str
     duration_seconds: int
     audio_url: str
+    audio_filename: str
     audio_sha256: str
     created_at: datetime
 

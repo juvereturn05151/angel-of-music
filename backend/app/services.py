@@ -25,6 +25,7 @@ def _job_to_schema(job: JobRecord, track: TrackRecord | None = None) -> Generati
             job_id=track.job_id,
             duration_seconds=track.duration_seconds,
             audio_url=f"/api/tracks/{track.track_id}/audio",
+            audio_filename=track.audio_filename,
             audio_sha256=track.audio_sha256,
             created_at=track.created_at,
         )

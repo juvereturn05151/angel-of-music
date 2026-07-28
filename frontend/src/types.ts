@@ -103,6 +103,7 @@ export interface GeneratedTrack {
   job_id: string;
   duration_seconds: number;
   audio_url: string;
+  audio_filename: string;
   audio_sha256: string;
   created_at: string;
 }
