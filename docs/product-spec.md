@@ -18,13 +18,13 @@ Angel of Music should help the designer turn a scene image into a useful musical
 
 ## Main Workflow
 
-1. The user uploads or selects a scene image.
+1. The user uploads one scene image from their device.
 2. The app analyzes the image for mood-relevant details such as setting, color, lighting, implied action, tension, scale, and emotional tone.
 3. The app produces an editable musical brief in plain language.
 4. The user reviews and edits the brief before generation.
 5. The backend generates a short instrumental cue from the approved brief.
-6. The app returns the cue, basic audio properties, and the brief that produced it.
-7. The user can download or reuse the result as temporary prototype audio.
+6. The app returns the cue, basic audio metadata available to the app, and the brief that produced it.
+7. The user can play the generated cue, download the audio file, and copy or revise the brief for another generation.
 
 ## Useful Result Criteria
 
@@ -35,16 +35,16 @@ The generated output should:
 - Match the intended emotional direction of the scene.
 - Be short enough to iterate quickly.
 - Avoid vocals unless explicitly supported later.
-- Loop or sit under gameplay without demanding too much attention.
+- Sit under gameplay without demanding too much attention. Seamless looping is preferred but not required for MVP.
 - Be accompanied by the editable brief so the user can explain or revise the direction.
-- Include basic measurable audio properties, such as duration and approximate loudness, when available.
+- Include basic audio metadata available to the app, at minimum duration for mock results. Loudness may be shown when it can be measured reliably.
 - Make it easy to compare the scene, brief, and generated cue as one connected decision.
 
 ## MVP Scope
 
 The MVP includes:
 
-- Single image upload.
+- Single image upload from the user's device.
 - Image-based mood interpretation.
 - Editable musical brief.
 - Short instrumental music generation.
@@ -66,7 +66,7 @@ The MVP does not include:
 - Real-time scoring during gameplay.
 - Composer marketplace features.
 - Collaboration, comments, or approvals.
-- User accounts, billing, or asset libraries unless needed for local testing.
+- Persistent user accounts, billing, and user-managed asset libraries.
 - Legal review or rights clearance automation.
 
 ## Claims To Avoid
@@ -85,9 +85,11 @@ Angel of Music must not claim that it:
 
 Users should only upload images they own, created, licensed, or otherwise have permission to use for this purpose.
 
-The product should avoid presenting uploaded images as public gallery content by default. During development, uploaded files should be treated as user-provided inputs for generating a private prototype result.
+The product should avoid presenting uploaded images as public gallery content by default. Uploaded images and generated results should not be published, listed in a public gallery, or shared with other users by default. For the mock MVP, they may be stored only as needed to complete the local generation flow.
 
 If sample images are included in the app, they should be original, public-domain, permissively licensed, or generated specifically for the project with documented usage expectations.
+
+Local fixtures or sample files may be used only to test the prototype.
 
 ## Output Usage Expectations
 

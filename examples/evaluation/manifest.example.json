@@ -1,0 +1,75 @@
+{
+  "schema_version": "1.0",
+  "items": [
+    {
+      "id": "placeholder-peaceful-fantasy",
+      "category": "peaceful fantasy",
+      "image_placeholder": "Add a permitted image path here.",
+      "rights_status": "placeholder - not verified",
+      "notes": "Do not treat this as ground truth."
+    },
+    {
+      "id": "placeholder-mystery",
+      "category": "mystery",
+      "image_placeholder": "Add a permitted image path here.",
+      "rights_status": "placeholder - not verified",
+      "notes": "Do not treat this as ground truth."
+    },
+    {
+      "id": "placeholder-danger",
+      "category": "danger",
+      "image_placeholder": "Add a permitted image path here.",
+      "rights_status": "placeholder - not verified",
+      "notes": "Do not treat this as ground truth."
+    },
+    {
+      "id": "placeholder-heroic",
+      "category": "heroic",
+      "image_placeholder": "Add a permitted image path here.",
+      "rights_status": "placeholder - not verified",
+      "notes": "Do not treat this as ground truth."
+    },
+    {
+      "id": "placeholder-melancholic",
+      "category": "melancholic",
+      "image_placeholder": "Add a permitted image path here.",
+      "rights_status": "placeholder - not verified",
+      "notes": "Do not treat this as ground truth."
+    },
+    {
+      "id": "placeholder-comedic",
+      "category": "comedic",
+      "image_placeholder": "Add a permitted image path here.",
+      "rights_status": "placeholder - not verified",
+      "notes": "Do not treat this as ground truth."
+    },
+    {
+      "id": "placeholder-science-fiction",
+      "category": "science fiction",
+      "image_placeholder": "Add a permitted image path here.",
+      "rights_status": "placeholder - not verified",
+      "notes": "Do not treat this as ground truth."
+    },
+    {
+      "id": "placeholder-horror",
+      "category": "horror",
+      "image_placeholder": "Add a permitted image path here.",
+      "rights_status": "placeholder - not verified",
+      "notes": "Do not treat this as ground truth."
+    },
+    {
+      "id": "placeholder-ambiguous",
+      "category": "ambiguous",
+      "image_placeholder": "Add a permitted image path here.",
+      "rights_status": "placeholder - not verified",
+      "notes": "Do not treat this as ground truth."
+    },
+    {
+      "id": "placeholder-abstract",
+      "category": "abstract",
+      "image_placeholder": "Add a permitted image path here.",
+      "rights_status": "placeholder - not verified",
+      "notes": "Do not treat this as ground truth."
+    }
+  ]
+}
