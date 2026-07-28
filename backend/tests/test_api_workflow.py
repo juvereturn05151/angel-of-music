@@ -90,6 +90,35 @@ def test_analyze_compose_generate_workflow() -> None:
         assert "audio_hash" in provenance
 
 
+def test_compose_prompt_can_enable_vocals() -> None:
+    client = TestClient(app)
+    brief = MusicBrief.model_validate(
+        {
+            "narrative_role": "character-theme",
+            "emotion": "hopeful",
+            "textures": ["warm"],
+            "energy": 0.45,
+            "emotional_intensity": 0.5,
+            "bpm": 92,
+            "duration_seconds": 12,
+            "instruments": ["piano"],
+            "musical_arc": "gradual-build",
+            "loop_requested": True,
+            "avoid_terms": ["vocals", "licensed themes"],
+            "rationale": "test",
+            "vocals": "enabled",
+        }
+    )
+
+    response = client.post("/api/compose-prompt", json=brief.model_dump(mode="json"))
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert "vocals: enabled" in payload["prompt"]
+    assert "avoid: licensed themes" in payload["prompt"]
+    assert "vocals were removed" in payload["warnings"][0]
+
+
 def test_controlled_generation_failure() -> None:
     client = TestClient(app)
     with client:

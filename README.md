@@ -82,7 +82,7 @@ ELEVENLABS_OUTPUT_FORMAT=mp3_48000_192
 ELEVENLABS_API_KEY=your_elevenlabs_api_key_here
 ```
 
-The backend sends the final deterministic `MusicBrief` prompt, asks for instrumental-only music with no vocals, and requests the duration from the edited brief. The API key is read only by the backend and is never sent to the frontend.
+The backend sends the final deterministic `MusicBrief` prompt and requests the duration from the edited brief. In the app, choose **No vocals** to force instrumental-only music, or **Allow vocals** to let ElevenLabs generate vocals when the prompt supports it. The API key is read only by the backend and is never sent to the frontend.
 
 To switch back to free placeholder audio:
 

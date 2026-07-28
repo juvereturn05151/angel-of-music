@@ -109,7 +109,7 @@ class ArtisticInference(BaseModel):
 
 
 class MusicBrief(ArtisticInference):
-    vocals: Literal["disabled"] = "disabled"
+    vocals: Literal["disabled", "enabled"] = "disabled"
 
     @model_validator(mode="after")
     def validate_contradictions(self) -> "MusicBrief":

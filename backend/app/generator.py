@@ -127,7 +127,7 @@ class ElevenMusicGenerator:
             "prompt": prompt,
             "music_length_ms": brief.duration_seconds * 1000,
             "model_id": self.settings.elevenlabs_music_model_id,
-            "force_instrumental": True,
+            "force_instrumental": brief.vocals == "disabled",
         }
         headers = {
             "Content-Type": "application/json",

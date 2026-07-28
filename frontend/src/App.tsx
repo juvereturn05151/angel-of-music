@@ -171,6 +171,15 @@ export function App() {
     setError(null);
   }
 
+  function updateBrief(nextBrief: MusicBrief) {
+    setBrief(nextBrief);
+    setPrompt("");
+    setPromptWarnings([]);
+    setJob(null);
+    setProvenance(null);
+    setError(null);
+  }
+
   function onFileChange(file: File | null) {
     clearDownstreamState();
     setSelectedFile(file);
@@ -307,7 +316,10 @@ export function App() {
                 <select
                   value={brief.narrative_role}
                   onChange={(event) =>
-                    setBrief({ ...brief, narrative_role: event.target.value as MusicBrief["narrative_role"] })
+                    updateBrief({
+                      ...brief,
+                      narrative_role: event.target.value as MusicBrief["narrative_role"]
+                    })
                   }
                 >
                   {narrativeRoles.map((item) => (
@@ -320,7 +332,7 @@ export function App() {
                 <select
                   value={brief.emotion}
                   onChange={(event) =>
-                    setBrief({ ...brief, emotion: event.target.value as MusicBrief["emotion"] })
+                    updateBrief({ ...brief, emotion: event.target.value as MusicBrief["emotion"] })
                   }
                 >
                   {emotions.map((item) => (
@@ -335,7 +347,7 @@ export function App() {
                   min={40}
                   type="number"
                   value={brief.bpm}
-                  onChange={(event) => setBrief({ ...brief, bpm: Number(event.target.value) })}
+                  onChange={(event) => updateBrief({ ...brief, bpm: Number(event.target.value) })}
                 />
               </label>
               <label>
@@ -346,7 +358,7 @@ export function App() {
                   type="number"
                   value={brief.duration_seconds}
                   onChange={(event) =>
-                    setBrief({ ...brief, duration_seconds: Number(event.target.value) })
+                    updateBrief({ ...brief, duration_seconds: Number(event.target.value) })
                   }
                 />
               </label>
@@ -358,7 +370,7 @@ export function App() {
                   step={0.01}
                   type="range"
                   value={brief.energy}
-                  onChange={(event) => setBrief({ ...brief, energy: Number(event.target.value) })}
+                  onChange={(event) => updateBrief({ ...brief, energy: Number(event.target.value) })}
                 />
               </label>
               <label>
@@ -370,7 +382,7 @@ export function App() {
                   type="range"
                   value={brief.emotional_intensity}
                   onChange={(event) =>
-                    setBrief({ ...brief, emotional_intensity: Number(event.target.value) })
+                    updateBrief({ ...brief, emotional_intensity: Number(event.target.value) })
                   }
                 />
               </label>
@@ -379,7 +391,10 @@ export function App() {
                 <select
                   value={brief.musical_arc}
                   onChange={(event) =>
-                    setBrief({ ...brief, musical_arc: event.target.value as MusicBrief["musical_arc"] })
+                    updateBrief({
+                      ...brief,
+                      musical_arc: event.target.value as MusicBrief["musical_arc"]
+                    })
                   }
                 >
                   {musicalArcs.map((item) => (
@@ -390,10 +405,27 @@ export function App() {
               <label className="checkbox">
                 <input
                   checked={brief.loop_requested}
-                  onChange={(event) => setBrief({ ...brief, loop_requested: event.target.checked })}
+                  onChange={(event) => updateBrief({ ...brief, loop_requested: event.target.checked })}
                   type="checkbox"
                 />
                 Loop requested
+              </label>
+              <label>
+                Vocals
+                <select
+                  value={brief.vocals}
+                  onChange={(event) => {
+                    const vocals = event.target.value as MusicBrief["vocals"];
+                    const avoidTerms =
+                      vocals === "enabled"
+                        ? brief.avoid_terms.filter((item) => item.toLowerCase() !== "vocals")
+                        : Array.from(new Set([...brief.avoid_terms, "vocals"]));
+                    updateBrief({ ...brief, vocals, avoid_terms: avoidTerms });
+                  }}
+                >
+                  <option value="disabled">No vocals</option>
+                  <option value="enabled">Allow vocals</option>
+                </select>
               </label>
             </div>
 
@@ -404,7 +436,7 @@ export function App() {
                   <input
                     checked={brief.textures.includes(item)}
                     onChange={() =>
-                      setBrief({ ...brief, textures: toggleList<Texture>(brief.textures, item) })
+                      updateBrief({ ...brief, textures: toggleList<Texture>(brief.textures, item) })
                     }
                     type="checkbox"
                   />
@@ -420,7 +452,7 @@ export function App() {
                   <input
                     checked={brief.instruments.includes(item)}
                     onChange={() =>
-                      setBrief({
+                      updateBrief({
                         ...brief,
                         instruments: toggleList<InstrumentFamily>(brief.instruments, item)
                       })
@@ -437,7 +469,7 @@ export function App() {
               <input
                 value={brief.avoid_terms.join(", ")}
                 onChange={(event) =>
-                  setBrief({
+                  updateBrief({
                     ...brief,
                     avoid_terms: event.target.value.split(",").map((item) => item.trim())
                   })
@@ -448,7 +480,7 @@ export function App() {
               Rationale
               <textarea
                 value={brief.rationale}
-                onChange={(event) => setBrief({ ...brief, rationale: event.target.value })}
+                onChange={(event) => updateBrief({ ...brief, rationale: event.target.value })}
               />
             </label>
             {validationErrors.length ? (

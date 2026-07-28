@@ -80,7 +80,7 @@ export interface ArtisticInference {
 }
 
 export interface MusicBrief extends ArtisticInference {
-  vocals: "disabled";
+  vocals: "disabled" | "enabled";
 }
 
 export interface AnalysisResponse {

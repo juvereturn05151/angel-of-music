@@ -14,7 +14,7 @@ from app.services import create_generation_job, get_job, run_generation_job
 VALID_MP3 = b"ID3\x04\x00\x00\x00\x00\x00\x00" + b"\xff\xfb\x90\x64" + (b"\x00" * 1200)
 
 
-def make_brief() -> MusicBrief:
+def make_brief(vocals: str = "disabled") -> MusicBrief:
     return MusicBrief.model_validate(
         {
             "narrative_role": "discovery",
@@ -29,7 +29,7 @@ def make_brief() -> MusicBrief:
             "loop_requested": True,
             "avoid_terms": ["vocals"],
             "rationale": "test",
-            "vocals": "disabled",
+            "vocals": vocals,
         }
     )
 
@@ -74,6 +74,20 @@ def test_elevenlabs_success_writes_valid_audio_atomically(tmp_path: Path) -> Non
     assert result.output_format == "mp3_48000_192"
     assert result.audio_hash
     assert not (tmp_path / "track.tmp").exists()
+
+
+def test_elevenlabs_vocal_enabled_does_not_force_instrumental(tmp_path: Path) -> None:
+    def handler(request: httpx.Request) -> httpx.Response:
+        body = json.loads(request.content)
+        assert body["force_instrumental"] is False
+        assert "vocals: enabled" in body["prompt"]
+        return httpx.Response(200, content=VALID_MP3)
+
+    make_generator(handler).generate(
+        brief=make_brief(vocals="enabled"),
+        prompt="purpose: temporary background music vocals: enabled",
+        output_path=tmp_path / "track.mp3",
+    )
 
 
 def test_elevenlabs_authentication_failure_is_controlled(tmp_path: Path) -> None:

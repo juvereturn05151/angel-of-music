@@ -21,6 +21,12 @@ def main() -> int:
         action="store_true",
         help="Required confirmation before the script calls ElevenLabs.",
     )
+    parser.add_argument(
+        "--vocals",
+        choices=["disabled", "enabled"],
+        default="disabled",
+        help="Whether the smoke-test brief should request vocals.",
+    )
     args = parser.parse_args()
     if not args.i_understand_this_costs_money:
         print("Refusing to run. Add --i-understand-this-costs-money to call ElevenLabs.")
@@ -43,9 +49,13 @@ def main() -> int:
             "instruments": ["piano", "woodwinds", "bells"],
             "musical_arc": "gradual-build",
             "loop_requested": True,
-            "avoid_terms": ["vocals", "licensed themes"],
+            "avoid_terms": (
+                ["licensed themes"]
+                if args.vocals == "enabled"
+                else ["vocals", "licensed themes"]
+            ),
             "rationale": "Manual smoke test for instrumental background music.",
-            "vocals": "disabled",
+            "vocals": args.vocals,
         }
     )
     prompt = compose_prompt(brief).prompt

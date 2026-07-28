@@ -103,6 +103,23 @@ describe("App", () => {
     expect(screen.getByLabelText("Emotion")).toHaveValue("heroic");
   });
 
+  it("lets the user choose whether vocals are allowed", async () => {
+    installHappyFetch();
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.upload(
+      screen.getByLabelText("Scene image"),
+      new File(["x"], "scene.png", { type: "image/png" })
+    );
+    await user.click(screen.getByRole("button", { name: /Run Analysis/i }));
+    const vocals = await screen.findByLabelText("Vocals");
+
+    expect(vocals).toHaveValue("disabled");
+    await user.selectOptions(vocals, "enabled");
+    expect(vocals).toHaveValue("enabled");
+  });
+
   it("clears stale prompt data when the image changes", async () => {
     installHappyFetch();
     const user = userEvent.setup();
