@@ -38,6 +38,12 @@ class Settings(BaseModel):
     huggingface_base_url: str = "https://router.huggingface.co/v1"
     huggingface_vision_model: str = "google/gemma-3-4b-it"
     huggingface_timeout_seconds: float = 60.0
+    music_generator_provider: str = "mock"
+    elevenlabs_api_key: str | None = None
+    elevenlabs_base_url: str = "https://api.elevenlabs.io"
+    elevenlabs_music_model_id: str = "music_v2"
+    elevenlabs_output_format: str = "mp3_48000_192"
+    elevenlabs_timeout_seconds: float = 120.0
 
 
 @lru_cache
@@ -45,6 +51,8 @@ def get_settings() -> Settings:
     _load_local_env()
     timeout = os.getenv("HUGGINGFACE_TIMEOUT_SECONDS", "60").strip() or "60"
     vision_model = os.getenv("HUGGINGFACE_VISION_MODEL", "google/gemma-3-4b-it").strip()
+    elevenlabs_timeout = os.getenv("ELEVENLABS_TIMEOUT_SECONDS", "120").strip() or "120"
+    music_model = os.getenv("ELEVENLABS_MUSIC_MODEL_ID", "music_v2").strip()
     settings = Settings(
         visual_analyzer_provider=os.getenv("VISUAL_ANALYZER_PROVIDER", "mock").strip().lower(),
         huggingface_api_token=os.getenv("HF_TOKEN") or os.getenv("HUGGINGFACE_API_TOKEN"),
@@ -53,6 +61,16 @@ def get_settings() -> Settings:
         ).rstrip("/"),
         huggingface_vision_model=vision_model or "google/gemma-3-4b-it",
         huggingface_timeout_seconds=float(timeout),
+        music_generator_provider=os.getenv("MUSIC_GENERATOR_PROVIDER", "mock").strip().lower(),
+        elevenlabs_api_key=os.getenv("ELEVENLABS_API_KEY"),
+        elevenlabs_base_url=os.getenv(
+            "ELEVENLABS_BASE_URL", "https://api.elevenlabs.io"
+        ).rstrip("/"),
+        elevenlabs_music_model_id=music_model or "music_v2",
+        elevenlabs_output_format=os.getenv(
+            "ELEVENLABS_OUTPUT_FORMAT", "mp3_48000_192"
+        ).strip(),
+        elevenlabs_timeout_seconds=float(elevenlabs_timeout),
     )
     settings.normalized_image_dir.mkdir(parents=True, exist_ok=True)
     settings.audio_dir.mkdir(parents=True, exist_ok=True)

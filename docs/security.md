@@ -12,6 +12,10 @@ Runtime images, SQLite data, and generated audio are stored under `backend/data/
 
 The default workflow does not send images to an external service. If `VISUAL_ANALYZER_PROVIDER=huggingface`, normalized image content is sent to Hugging Face for visual analysis. The Hugging Face token must stay in local `.env` only and must not be committed. API responses and provenance should not expose the token or local filesystem paths.
 
+## External Music API
+
+The default workflow does not send prompts to an external music service. If `MUSIC_GENERATOR_PROVIDER=elevenlabs`, the final music prompt and requested duration are sent to ElevenLabs. `ELEVENLABS_API_KEY` must stay in local `.env` only and must not be committed, logged, returned to the frontend, or stored in provenance.
+
 ## Rights And Usage
 
 Users are responsible for having permission to upload images. Generated mock audio is functional test audio for prototype communication and should not be treated as final licensed soundtrack material.

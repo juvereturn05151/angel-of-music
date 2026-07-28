@@ -2,9 +2,9 @@
 
 Angel of Music is a portfolio full-stack project for game designers who need temporary background music to communicate a scene's intended mood during early prototyping.
 
-The MVP is deliberately human-in-the-loop: upload an image, inspect visual observations, edit every artistic inference, preview a deterministic music prompt, start a persisted mock generation job, and play a short generated WAV in the browser.
+The MVP is deliberately human-in-the-loop: upload an image, inspect visual observations, edit every artistic inference, preview a deterministic music prompt, start a persisted generation job, and play the generated audio in the browser.
 
-No API key, local AI model, CUDA, PyTorch, MusicGen, Docker, Redis, Celery, LangChain, authentication, or cloud deployment is required for the default mock workflow. Optional Hugging Face vision analysis can be enabled with a local `.env` token.
+No API key, local AI model, CUDA, PyTorch, MusicGen, Docker, Redis, Celery, LangChain, authentication, or cloud deployment is required for the default mock workflow. Optional Hugging Face vision analysis and ElevenLabs music generation can be enabled with local `.env` tokens.
 
 ## Repository Layout
 
@@ -70,6 +70,39 @@ HF_TOKEN=your_hugging_face_token_here
 ```
 
 Make sure your Hugging Face account has accepted the Gemma model license. Restart the backend after changing `.env`.
+
+## Optional ElevenLabs Music Generation
+
+The app defaults to free deterministic mock audio. To generate real instrumental music through Eleven Music v2, put these values in your local `.env`:
+
+```powershell
+MUSIC_GENERATOR_PROVIDER=elevenlabs
+ELEVENLABS_MUSIC_MODEL_ID=music_v2
+ELEVENLABS_OUTPUT_FORMAT=mp3_48000_192
+ELEVENLABS_API_KEY=your_elevenlabs_api_key_here
+```
+
+The backend sends the final deterministic `MusicBrief` prompt, asks for instrumental-only music with no vocals, and requests the duration from the edited brief. The API key is read only by the backend and is never sent to the frontend.
+
+To switch back to free placeholder audio:
+
+```powershell
+MUSIC_GENERATOR_PROVIDER=mock
+```
+
+Restart the backend after changing `.env`.
+
+### Paid Smoke Test
+
+This script is opt-in because it calls ElevenLabs and may incur API cost:
+
+```powershell
+cd backend
+.\.venv\Scripts\Activate.ps1
+python scripts\smoke_elevenlabs_music.py --i-understand-this-costs-money
+```
+
+On success, it writes a short audio file under `backend/data/smoke-tests/` and prints non-secret metadata.
 
 ## Test And Build
 

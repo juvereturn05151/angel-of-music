@@ -224,7 +224,7 @@ export function App() {
           <h1>Angel of Music</h1>
           <p>
             Upload a scene image, inspect visual observations, edit the artistic brief, and
-            generate a short deterministic mock background cue.
+            generate a short instrumental background cue.
           </p>
         </div>
         <aside>
@@ -462,9 +462,9 @@ export function App() {
 
         {prompt ? (
           <section className="panel">
-            <h2>5. Mock Generation Job</h2>
+            <h2>5. Generation Job</h2>
             <button disabled={status === "generating" || validationErrors.length > 0} onClick={generateTrack}>
-              {status === "generating" ? "Starting..." : "Generate Mock Track"}
+              {status === "generating" ? "Starting..." : "Generate Track"}
             </button>
             {job ? (
               <p className="status">

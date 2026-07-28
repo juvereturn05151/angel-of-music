@@ -6,6 +6,7 @@ from pydantic import BaseModel, ValidationError
 from app.analysis import VisualAnalyzerError, get_visual_analyzer
 from app.config import get_settings
 from app.database import init_db
+from app.generator import audio_media_type
 from app.image_handling import ImageValidationError, validate_and_store_image
 from app.prompting import compose_prompt
 from app.schemas import (
@@ -112,7 +113,11 @@ def track_audio(track_id: str) -> FileResponse:
     audio_root = get_settings().audio_dir.resolve()
     if audio_root not in path.parents or not path.exists():
         raise HTTPException(status_code=404, detail="Track audio was not found.")
-    return FileResponse(path, media_type="audio/wav", filename=f"{track_id}.wav")
+    return FileResponse(
+        path,
+        media_type=audio_media_type(track.audio_filename),
+        filename=track.audio_filename,
+    )
 
 
 @app.get("/api/tracks/{track_id}/provenance")

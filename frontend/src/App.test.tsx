@@ -83,7 +83,7 @@ describe("App", () => {
 
     expect(screen.getByRole("heading", { name: "Angel of Music" })).toBeInTheDocument();
     expect(screen.getByLabelText("Scene image")).toBeInTheDocument();
-    expect(screen.getByText(/Mock analysis only/i)).toBeInTheDocument();
+    expect(screen.getByText(/Human-reviewed analysis/i)).toBeInTheDocument();
   });
 
   it("analyzes an image and lets the user edit inferred fields", async () => {
@@ -95,7 +95,7 @@ describe("App", () => {
       screen.getByLabelText("Scene image"),
       new File(["x"], "scene.png", { type: "image/png" })
     );
-    await user.click(screen.getByRole("button", { name: /Run Mock Analysis/i }));
+    await user.click(screen.getByRole("button", { name: /Run Analysis/i }));
 
     expect(await screen.findByText(/Visual Observations/)).toBeInTheDocument();
     await user.selectOptions(screen.getByLabelText("Emotion"), "heroic");
@@ -111,7 +111,7 @@ describe("App", () => {
       screen.getByLabelText("Scene image"),
       new File(["x"], "scene.png", { type: "image/png" })
     );
-    await user.click(screen.getByRole("button", { name: /Run Mock Analysis/i }));
+    await user.click(screen.getByRole("button", { name: /Run Analysis/i }));
     await user.click(await screen.findByRole("button", { name: /Preview Prompt/i }));
     expect(await screen.findByText(/vocals: disabled/)).toBeInTheDocument();
 
@@ -123,7 +123,7 @@ describe("App", () => {
     expect(screen.queryByText(/vocals: disabled/)).not.toBeInTheDocument();
   });
 
-  it("generates a completed mock track and plays without duplicate play calls", async () => {
+  it("generates a completed track and plays without duplicate play calls", async () => {
     installHappyFetch();
     const user = userEvent.setup();
     render(<App />);
@@ -132,9 +132,9 @@ describe("App", () => {
       screen.getByLabelText("Scene image"),
       new File(["x"], "scene.png", { type: "image/png" })
     );
-    await user.click(screen.getByRole("button", { name: /Run Mock Analysis/i }));
+    await user.click(screen.getByRole("button", { name: /Run Analysis/i }));
     await user.click(await screen.findByRole("button", { name: /Preview Prompt/i }));
-    await user.click(await screen.findByRole("button", { name: /Generate Mock Track/i }));
+    await user.click(await screen.findByRole("button", { name: /Generate Track/i }));
 
     expect(await screen.findByText("Track Result")).toBeInTheDocument();
     const play = screen.getByRole("button", { name: "Play" });
@@ -153,7 +153,7 @@ describe("App", () => {
       screen.getByLabelText("Scene image"),
       new File(["x"], "scene.png", { type: "image/png" })
     );
-    await user.click(screen.getByRole("button", { name: /Run Mock Analysis/i }));
+    await user.click(screen.getByRole("button", { name: /Run Analysis/i }));
 
     expect(await screen.findByText("Bad image")).toBeInTheDocument();
   });
