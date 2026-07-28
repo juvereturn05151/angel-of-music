@@ -1,0 +1,1 @@
+Project in one sentence: Angel of Music transforms a scene image into an editable musical brief, generates a short instrumental cue, analyzes measurable audio properties, and keeps the human in control of artistic interpretation.
