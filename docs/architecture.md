@@ -4,7 +4,7 @@ Angel of Music is a local monorepo with a browser frontend and Python backend co
 
 ## Backend
 
-FastAPI exposes the API contracts. Pydantic v2 validates request and response schemas. SQLAlchemy persists generation jobs and generated track metadata in SQLite. Pillow validates image bytes and writes normalized PNG images without metadata. The mock analyzer and mock WAV generator sit behind small provider-neutral classes so real providers can replace them later.
+FastAPI exposes the API contracts. Pydantic v2 validates request and response schemas. SQLAlchemy persists generation jobs and generated track metadata in SQLite. Pillow validates image bytes and writes normalized PNG images without metadata. Visual analysis is selected by environment configuration: `mock` for deterministic local workflow testing, or `huggingface` for optional API-backed vision analysis using `google/gemma-3-4b-it`. The mock WAV generator remains local and deterministic.
 
 Runtime files live under `backend/data/` and are ignored by Git.
 

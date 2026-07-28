@@ -223,12 +223,12 @@ export function App() {
           <p className="eyebrow">Human-in-the-loop game audio prototype</p>
           <h1>Angel of Music</h1>
           <p>
-            Upload a scene image, inspect mock visual observations, edit the artistic brief, and
+            Upload a scene image, inspect visual observations, edit the artistic brief, and
             generate a short deterministic mock background cue.
           </p>
         </div>
         <aside>
-          Mock analysis only. No external AI, no copyrighted music download, no licensing claim.
+          Human-reviewed analysis. No copyrighted music download, no licensing claim.
         </aside>
       </header>
 
@@ -243,7 +243,7 @@ export function App() {
           />
           {previewUrl ? <img alt="Selected scene preview" className="preview" src={previewUrl} /> : null}
           <button disabled={!selectedFile || status === "analyzing"} onClick={runAnalysis} type="button">
-            {status === "analyzing" ? "Analyzing..." : "Run Mock Analysis"}
+            {status === "analyzing" ? "Analyzing..." : "Run Analysis"}
           </button>
         </section>
 

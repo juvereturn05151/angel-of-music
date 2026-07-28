@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel, ValidationError
 
-from app.analysis import MockVisualAnalyzer
+from app.analysis import VisualAnalyzerError, get_visual_analyzer
 from app.config import get_settings
 from app.database import init_db
 from app.image_handling import ImageValidationError, validate_and_store_image
@@ -61,7 +61,10 @@ async def analyze_image(image: UploadFile = File(...)) -> AnalysisResponse:
         stored = await validate_and_store_image(image)
     except ImageValidationError as exc:
         raise HTTPException(status_code=400, detail=exc.message) from exc
-    return MockVisualAnalyzer().analyze(stored)
+    try:
+        return get_visual_analyzer().analyze(stored)
+    except VisualAnalyzerError as exc:
+        raise HTTPException(status_code=502, detail=exc.message) from exc
 
 
 @app.post("/api/compose-prompt", response_model=PromptResponse)

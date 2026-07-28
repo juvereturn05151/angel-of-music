@@ -2,9 +2,9 @@
 
 Angel of Music is a portfolio full-stack project for game designers who need temporary background music to communicate a scene's intended mood during early prototyping.
 
-The MVP is deliberately human-in-the-loop: upload an image, inspect mock visual observations, edit every artistic inference, preview a deterministic music prompt, start a persisted mock generation job, and play a short generated WAV in the browser.
+The MVP is deliberately human-in-the-loop: upload an image, inspect visual observations, edit every artistic inference, preview a deterministic music prompt, start a persisted mock generation job, and play a short generated WAV in the browser.
 
-No API key, external AI service, local AI model, CUDA, PyTorch, MusicGen, Docker, Redis, Celery, LangChain, authentication, or cloud deployment is required for this milestone.
+No API key, local AI model, CUDA, PyTorch, MusicGen, Docker, Redis, Celery, LangChain, authentication, or cloud deployment is required for the default mock workflow. Optional Hugging Face vision analysis can be enabled with a local `.env` token.
 
 ## Repository Layout
 
@@ -58,6 +58,18 @@ npm.cmd run dev
 ```
 
 Open `http://localhost:5173`.
+
+## Optional Hugging Face Vision Analysis
+
+The app defaults to deterministic mock image analysis. To use Hugging Face with `google/gemma-3-4b-it`, put these values in your local `.env`:
+
+```powershell
+VISUAL_ANALYZER_PROVIDER=huggingface
+HUGGINGFACE_VISION_MODEL=google/gemma-3-4b-it
+HF_TOKEN=your_hugging_face_token_here
+```
+
+Make sure your Hugging Face account has accepted the Gemma model license. Restart the backend after changing `.env`.
 
 ## Test And Build
 
