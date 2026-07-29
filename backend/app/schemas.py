@@ -85,7 +85,7 @@ class ArtisticInference(BaseModel):
     energy: float = Field(ge=0, le=1)
     emotional_intensity: float = Field(ge=0, le=1)
     bpm: int = Field(ge=40, le=220)
-    duration_seconds: int = Field(ge=10, le=20)
+    duration_seconds: int = Field(ge=10, le=120)
     instruments: list[InstrumentFamily]
     musical_arc: MusicalArc
     loop_requested: bool = True

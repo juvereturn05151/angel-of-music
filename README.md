@@ -14,10 +14,9 @@ browser, and download the result.
 - Image upload validation for JPEG, PNG, and WebP.
 - Mock image analysis for no-secret local demos.
 - Optional Hugging Face vision analysis using `google/gemma-3-4b-it`.
-- Editable music brief with purpose, narrative role, emotion, custom "other" fields,
-  textures, instruments, BPM, duration, musical arc, loop request, vocals, avoid terms,
-  and rationale.
-- Deterministic prompt preview that includes purpose and rationale.
+- Simplified editable music brief with purpose, mood overview, BPM, duration, loop,
+  and vocals.
+- Deterministic prompt preview that includes only the user-facing brief fields.
 - Mock audio fallback for free local testing.
 - Optional ElevenLabs Eleven Music v2 generation.
 - Vocal control: no vocals forces instrumental-only output; allow vocals permits vocal
@@ -126,8 +125,9 @@ ELEVENLABS_TIMEOUT_SECONDS=120
 ELEVENLABS_API_KEY=your_elevenlabs_api_key_here
 ```
 
-The backend sends the final deterministic `MusicBrief` prompt and requests the edited duration.
-The API key is read only by the backend and is never sent to the frontend.
+The backend sends the final deterministic `MusicBrief` prompt and requests the edited
+duration, up to 120 seconds. The API key is read only by the backend and is never sent
+to the frontend.
 
 To switch back to free placeholder audio:
 

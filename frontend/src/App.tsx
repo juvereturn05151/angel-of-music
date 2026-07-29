@@ -8,14 +8,7 @@ import {
   fetchProvenance,
   startGeneration
 } from "./api";
-import { emotions, instruments, musicalArcs, narrativeRoles, textures } from "./constants";
-import type {
-  AnalysisResponse,
-  GenerationJob,
-  InstrumentFamily,
-  MusicBrief,
-  Texture
-} from "./types";
+import type { AnalysisResponse, GenerationJob, MusicBrief } from "./types";
 import { useAudioPlayer } from "./useAudioPlayer";
 
 import "./styles.css";
@@ -49,31 +42,14 @@ function toBrief(analysis: AnalysisResponse): MusicBrief {
   };
 }
 
-function toggleList<T extends string>(items: T[], value: T): T[] {
-  if (items.includes(value)) {
-    return items.filter((item) => item !== value);
-  }
-  return [...items, value];
-}
-
 function validateBrief(brief: MusicBrief): string[] {
   const errors: string[] = [];
-  if (brief.textures.length === 0) errors.push("Choose at least one texture.");
-  if (brief.instruments.length === 0) errors.push("Choose at least one instrument family.");
   if (brief.bpm < 40 || brief.bpm > 220) errors.push("BPM must be between 40 and 220.");
-  if (brief.duration_seconds < 10 || brief.duration_seconds > 20) {
-    errors.push("Duration must be between 10 and 20 seconds.");
+  if (brief.duration_seconds < 10 || brief.duration_seconds > 120) {
+    errors.push("Duration must be between 10 and 120 seconds.");
   }
   if (!brief.purpose.trim()) errors.push("Purpose is required.");
-  if (brief.narrative_role === "other" && !brief.custom_narrative_role?.trim()) {
-    errors.push("Custom narrative role is required.");
-  }
-  if (brief.emotion === "other" && !brief.custom_emotion?.trim()) {
-    errors.push("Custom emotion is required.");
-  }
-  if (brief.musical_arc === "loop-friendly" && !brief.loop_requested) {
-    errors.push("Loop-friendly arc conflicts with loop request turned off.");
-  }
+  if (!brief.rationale.trim()) errors.push("Mood overview is required.");
   return errors;
 }
 
@@ -265,7 +241,7 @@ export function App() {
           <h1>Angel of Music</h1>
           <p>
             Upload a scene image, inspect visual observations, edit the artistic brief, and
-            generate a short instrumental background cue.
+            generate a short background cue.
           </p>
         </div>
         <aside>
@@ -328,69 +304,21 @@ export function App() {
             <h2>3. Editable Music Brief</h2>
             <div className="formGrid">
               <label className="spanTwo">
-                Purpose
+                1. Purpose
                 <input
                   value={brief.purpose}
                   onChange={(event) => updateBrief({ ...brief, purpose: event.target.value })}
                 />
               </label>
-              <label>
-                Narrative role
-                <select
-                  value={brief.narrative_role}
-                  onChange={(event) =>
-                    updateBrief({
-                      ...brief,
-                      narrative_role: event.target.value as MusicBrief["narrative_role"],
-                      custom_narrative_role:
-                        event.target.value === "other" ? brief.custom_narrative_role ?? "" : null
-                    })
-                  }
-                >
-                  {narrativeRoles.map((item) => (
-                    <option key={item}>{item}</option>
-                  ))}
-                </select>
+              <label className="spanTwo">
+                2. Mood Overview
+                <textarea
+                  value={brief.rationale}
+                  onChange={(event) => updateBrief({ ...brief, rationale: event.target.value })}
+                />
               </label>
-              {brief.narrative_role === "other" ? (
-                <label>
-                  Custom narrative role
-                  <input
-                    value={brief.custom_narrative_role ?? ""}
-                    onChange={(event) =>
-                      updateBrief({ ...brief, custom_narrative_role: event.target.value })
-                    }
-                  />
-                </label>
-              ) : null}
               <label>
-                Emotion
-                <select
-                  value={brief.emotion}
-                  onChange={(event) =>
-                    updateBrief({
-                      ...brief,
-                      emotion: event.target.value as MusicBrief["emotion"],
-                      custom_emotion: event.target.value === "other" ? brief.custom_emotion ?? "" : null
-                    })
-                  }
-                >
-                  {emotions.map((item) => (
-                    <option key={item}>{item}</option>
-                  ))}
-                </select>
-              </label>
-              {brief.emotion === "other" ? (
-                <label>
-                  Custom emotion
-                  <input
-                    value={brief.custom_emotion ?? ""}
-                    onChange={(event) => updateBrief({ ...brief, custom_emotion: event.target.value })}
-                  />
-                </label>
-              ) : null}
-              <label>
-                BPM
+                3. BPM
                 <input
                   max={220}
                   min={40}
@@ -400,9 +328,9 @@ export function App() {
                 />
               </label>
               <label>
-                Duration
+                4. Duration (seconds, up to 120)
                 <input
-                  max={20}
+                  max={120}
                   min={10}
                   type="number"
                   value={brief.duration_seconds}
@@ -411,56 +339,16 @@ export function App() {
                   }
                 />
               </label>
-              <label>
-                Energy
-                <input
-                  max={1}
-                  min={0}
-                  step={0.01}
-                  type="range"
-                  value={brief.energy}
-                  onChange={(event) => updateBrief({ ...brief, energy: Number(event.target.value) })}
-                />
-              </label>
-              <label>
-                Emotional intensity
-                <input
-                  max={1}
-                  min={0}
-                  step={0.01}
-                  type="range"
-                  value={brief.emotional_intensity}
-                  onChange={(event) =>
-                    updateBrief({ ...brief, emotional_intensity: Number(event.target.value) })
-                  }
-                />
-              </label>
-              <label>
-                Musical arc
-                <select
-                  value={brief.musical_arc}
-                  onChange={(event) =>
-                    updateBrief({
-                      ...brief,
-                      musical_arc: event.target.value as MusicBrief["musical_arc"]
-                    })
-                  }
-                >
-                  {musicalArcs.map((item) => (
-                    <option key={item}>{item}</option>
-                  ))}
-                </select>
-              </label>
               <label className="checkbox">
                 <input
                   checked={brief.loop_requested}
                   onChange={(event) => updateBrief({ ...brief, loop_requested: event.target.checked })}
                   type="checkbox"
                 />
-                Loop requested
+                5. Loop
               </label>
               <label>
-                Vocals
+                6. Vocals
                 <select
                   value={brief.vocals}
                   onChange={(event) => {
@@ -477,61 +365,6 @@ export function App() {
                 </select>
               </label>
             </div>
-
-            <fieldset>
-              <legend>Textures</legend>
-              {textures.map((item) => (
-                <label className="chip" key={item}>
-                  <input
-                    checked={brief.textures.includes(item)}
-                    onChange={() =>
-                      updateBrief({ ...brief, textures: toggleList<Texture>(brief.textures, item) })
-                    }
-                    type="checkbox"
-                  />
-                  {item}
-                </label>
-              ))}
-            </fieldset>
-
-            <fieldset>
-              <legend>Instrument families</legend>
-              {instruments.map((item) => (
-                <label className="chip" key={item}>
-                  <input
-                    checked={brief.instruments.includes(item)}
-                    onChange={() =>
-                      updateBrief({
-                        ...brief,
-                        instruments: toggleList<InstrumentFamily>(brief.instruments, item)
-                      })
-                    }
-                    type="checkbox"
-                  />
-                  {item}
-                </label>
-              ))}
-            </fieldset>
-
-            <label>
-              Avoid terms
-              <input
-                value={brief.avoid_terms.join(", ")}
-                onChange={(event) =>
-                  updateBrief({
-                    ...brief,
-                    avoid_terms: event.target.value.split(",").map((item) => item.trim())
-                  })
-                }
-              />
-            </label>
-            <label>
-              Rationale
-              <textarea
-                value={brief.rationale}
-                onChange={(event) => updateBrief({ ...brief, rationale: event.target.value })}
-              />
-            </label>
             {validationErrors.length ? (
               <ul className="errorList">
                 {validationErrors.map((item) => (

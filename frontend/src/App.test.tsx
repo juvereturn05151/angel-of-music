@@ -87,7 +87,7 @@ describe("App", () => {
     expect(screen.getByText(/Human-reviewed analysis/i)).toBeInTheDocument();
   });
 
-  it("analyzes an image and lets the user edit inferred fields", async () => {
+  it("analyzes an image and lets the user edit the mood overview", async () => {
     installHappyFetch();
     const user = userEvent.setup();
     render(<App />);
@@ -99,32 +99,9 @@ describe("App", () => {
     await user.click(screen.getByRole("button", { name: /Run Analysis/i }));
 
     expect(await screen.findByText(/Visual Observations/)).toBeInTheDocument();
-    await user.selectOptions(screen.getByLabelText("Emotion"), "heroic");
-    expect(screen.getByLabelText("Emotion")).toHaveValue("heroic");
-  });
-
-  it("requires custom narrative and emotion text for other categories", async () => {
-    installHappyFetch();
-    const user = userEvent.setup();
-    render(<App />);
-
-    await user.upload(
-      screen.getByLabelText("Scene image"),
-      new File(["x"], "scene.png", { type: "image/png" })
-    );
-    await user.click(screen.getByRole("button", { name: /Run Analysis/i }));
-
-    await user.selectOptions(await screen.findByLabelText("Narrative role"), "other");
-    await user.selectOptions(screen.getByLabelText("Emotion"), "other");
-
-    expect(await screen.findByText("Custom narrative role is required.")).toBeInTheDocument();
-    expect(screen.getByText("Custom emotion is required.")).toBeInTheDocument();
-
-    await user.type(screen.getByLabelText("Custom narrative role"), "quiet rivalry");
-    await user.type(screen.getByLabelText("Custom emotion"), "bittersweet wonder");
-
-    expect(screen.queryByText("Custom narrative role is required.")).not.toBeInTheDocument();
-    expect(screen.queryByText("Custom emotion is required.")).not.toBeInTheDocument();
+    await user.clear(screen.getByLabelText("2. Mood Overview"));
+    await user.type(screen.getByLabelText("2. Mood Overview"), "gentle comic tension");
+    expect(screen.getByLabelText("2. Mood Overview")).toHaveValue("gentle comic tension");
   });
 
   it("lets the user choose whether vocals are allowed", async () => {
@@ -154,7 +131,7 @@ describe("App", () => {
       new File(["x"], "scene.png", { type: "image/png" })
     );
     await user.click(screen.getByRole("button", { name: /Run Analysis/i }));
-    const purpose = await screen.findByLabelText("Purpose");
+    const purpose = await screen.findByLabelText("1. Purpose");
 
     await user.clear(purpose);
     await user.type(purpose, "temporary village theme for a cozy quest hub");

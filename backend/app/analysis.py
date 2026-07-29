@@ -164,7 +164,7 @@ class HuggingFaceVisualAnalyzer:
             energy=_clamp_float(payload.get("energy"), 0.45),
             emotional_intensity=_clamp_float(payload.get("emotional_intensity"), 0.45),
             bpm=_clamp_int(payload.get("bpm"), 84, 40, 220),
-            duration_seconds=_clamp_int(payload.get("duration_seconds"), 14, 10, 20),
+            duration_seconds=_clamp_int(payload.get("duration_seconds"), 14, 10, 120),
             instruments=_enum_list(
                 InstrumentFamily, payload.get("instruments"), [InstrumentFamily.piano]
             ),
