@@ -24,10 +24,11 @@ class HealthResponse(BaseModel):
     status: str
 
 
+settings = get_settings()
 app = FastAPI(title="Angel of Music API")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_origins=settings.frontend_origins,
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -110,8 +111,8 @@ def track_audio(track_id: str) -> FileResponse:
     track = get_track(track_id)
     if not track:
         raise HTTPException(status_code=404, detail="Track was not found.")
-    path = (get_settings().audio_dir / track.audio_filename).resolve()
-    audio_root = get_settings().audio_dir.resolve()
+    path = (settings.audio_dir / track.audio_filename).resolve()
+    audio_root = settings.audio_dir.resolve()
     if audio_root not in path.parents or not path.exists():
         raise HTTPException(status_code=404, detail="Track audio was not found.")
     return FileResponse(

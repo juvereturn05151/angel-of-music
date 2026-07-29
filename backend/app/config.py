@@ -25,6 +25,10 @@ def _load_local_env() -> None:
 
 class Settings(BaseModel):
     app_name: str = "Angel of Music API"
+    frontend_origins: list[str] = [
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    ]
     storage_dir: Path = Path("data")
     normalized_image_dir: Path = Path("data/images")
     audio_dir: Path = Path("data/audio")
@@ -53,7 +57,11 @@ def get_settings() -> Settings:
     vision_model = os.getenv("HUGGINGFACE_VISION_MODEL", "google/gemma-3-4b-it").strip()
     elevenlabs_timeout = os.getenv("ELEVENLABS_TIMEOUT_SECONDS", "120").strip() or "120"
     music_model = os.getenv("ELEVENLABS_MUSIC_MODEL_ID", "music_v2").strip()
+    frontend_origins = _split_csv(
+        os.getenv("FRONTEND_ORIGIN", "http://localhost:5173,http://127.0.0.1:5173")
+    )
     settings = Settings(
+        frontend_origins=frontend_origins,
         visual_analyzer_provider=os.getenv("VISUAL_ANALYZER_PROVIDER", "mock").strip().lower(),
         huggingface_api_token=os.getenv("HF_TOKEN") or os.getenv("HUGGINGFACE_API_TOKEN"),
         huggingface_base_url=os.getenv(
@@ -76,3 +84,7 @@ def get_settings() -> Settings:
     settings.audio_dir.mkdir(parents=True, exist_ok=True)
     settings.sqlite_path.parent.mkdir(parents=True, exist_ok=True)
     return settings
+
+
+def _split_csv(value: str) -> list[str]:
+    return [item.strip().rstrip("/") for item in value.split(",") if item.strip()]
