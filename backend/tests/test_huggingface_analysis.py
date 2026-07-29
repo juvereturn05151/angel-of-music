@@ -77,3 +77,38 @@ def test_huggingface_analyzer_requires_token(tmp_path) -> None:
         assert exc.code == "missing_huggingface_token"
     else:
         raise AssertionError("Expected missing token error.")
+
+
+def test_huggingface_analyzer_never_defaults_to_other(tmp_path) -> None:
+    def handler(_: httpx.Request) -> httpx.Response:
+        content = {
+            "scene_description": "A vague scene.",
+            "visible_subjects": ["shape"],
+            "composition": "Centered.",
+            "mood_cues": ["unclear"],
+            "narrative_role": "other",
+            "emotion": "other",
+            "textures": ["warm"],
+            "energy": 0.4,
+            "emotional_intensity": 0.4,
+            "bpm": 88,
+            "duration_seconds": 14,
+            "instruments": ["piano"],
+            "musical_arc": "steady",
+            "loop_requested": True,
+            "avoid_terms": ["vocals"],
+            "rationale": "test",
+        }
+        return httpx.Response(
+            200,
+            json={"choices": [{"message": {"content": json.dumps(content)}}]},
+        )
+
+    settings = Settings(huggingface_api_token="test-token")
+    client = httpx.Client(transport=httpx.MockTransport(handler))
+    result = HuggingFaceVisualAnalyzer(settings=settings, client=client).analyze(
+        make_stored_image(tmp_path)
+    )
+
+    assert result.inference.narrative_role == "exploration"
+    assert result.inference.emotion == "ambiguous"

@@ -156,10 +156,10 @@ class HuggingFaceVisualAnalyzer:
             notes=_build_notes(payload),
         )
         inference = ArtisticInference(
-            narrative_role=_enum_value(
+            narrative_role=_enum_value_without_other(
                 NarrativeRole, payload.get("narrative_role"), NarrativeRole.exploration
             ),
-            emotion=_enum_value(Emotion, payload.get("emotion"), Emotion.ambiguous),
+            emotion=_enum_value_without_other(Emotion, payload.get("emotion"), Emotion.ambiguous),
             textures=_enum_list(Texture, payload.get("textures"), [Texture.organic]),
             energy=_clamp_float(payload.get("energy"), 0.45),
             emotional_intensity=_clamp_float(payload.get("emotional_intensity"), 0.45),
@@ -222,8 +222,8 @@ class HuggingFaceVisualAnalyzer:
                                 "narrative_role, emotion, textures, energy, emotional_intensity, "
                                 "bpm, duration_seconds, instruments, musical_arc, loop_requested, "
                                 "avoid_terms, and rationale. Use only these allowed enum values: "
-                                f"narrative_role={_enum_values(NarrativeRole)}; "
-                                f"emotion={_enum_values(Emotion)}; "
+                                f"narrative_role={_enum_values_without_other(NarrativeRole)}; "
+                                f"emotion={_enum_values_without_other(Emotion)}; "
                                 f"textures={_enum_values(Texture)}; "
                                 f"instruments={_enum_values(InstrumentFamily)}; "
                                 f"musical_arc={_enum_values(MusicalArc)}."
@@ -334,6 +334,10 @@ def _enum_values(enum_class: type[Enum]) -> list[str]:
     return [str(item.value) for item in enum_class]
 
 
+def _enum_values_without_other(enum_class: type[Enum]) -> list[str]:
+    return [value for value in _enum_values(enum_class) if value != "other"]
+
+
 def _normalize_choice(value: object) -> str:
     return str(value).strip().lower().replace(" ", "-").replace("_", "-")
 
@@ -344,6 +348,13 @@ def _enum_value(enum_class: type[EnumT], value: object, default: EnumT) -> EnumT
         if normalized == str(item.value):
             return item
     return default
+
+
+def _enum_value_without_other(enum_class: type[EnumT], value: object, default: EnumT) -> EnumT:
+    item = _enum_value(enum_class, value, default)
+    if str(item.value) == "other":
+        return default
+    return item
 
 
 def _enum_list(enum_class: type[EnumT], value: object, default: list[EnumT]) -> list[EnumT]:
