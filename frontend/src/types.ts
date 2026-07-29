@@ -7,7 +7,8 @@ export type NarrativeRole =
   | "victory"
   | "loss"
   | "character-theme"
-  | "transition";
+  | "transition"
+  | "other";
 
 export type Emotion =
   | "peaceful"
@@ -18,7 +19,8 @@ export type Emotion =
   | "playful"
   | "frightening"
   | "hopeful"
-  | "ambiguous";
+  | "ambiguous"
+  | "other";
 
 export type Texture =
   | "warm"
@@ -80,7 +82,10 @@ export interface ArtisticInference {
 }
 
 export interface MusicBrief extends ArtisticInference {
+  purpose: string;
   vocals: "disabled" | "enabled";
+  custom_narrative_role: string | null;
+  custom_emotion: string | null;
 }
 
 export interface AnalysisResponse {

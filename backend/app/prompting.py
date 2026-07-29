@@ -1,6 +1,18 @@
 from app.schemas import MusicBrief, MusicalArc, PromptResponse
 
 
+def _narrative_role_value(brief: MusicBrief) -> str:
+    if brief.narrative_role.value == "other":
+        return " ".join((brief.custom_narrative_role or "").split())
+    return brief.narrative_role.value
+
+
+def _emotion_value(brief: MusicBrief) -> str:
+    if brief.emotion.value == "other":
+        return " ".join((brief.custom_emotion or "").split())
+    return brief.emotion.value
+
+
 def compose_prompt(brief: MusicBrief) -> PromptResponse:
     warnings: list[str] = []
     instruments = sorted({item.value for item in brief.instruments})
@@ -18,9 +30,9 @@ def compose_prompt(brief: MusicBrief) -> PromptResponse:
         warnings.append("vocals were removed from avoid terms because vocals are enabled.")
 
     fields = [
-        ("purpose", "temporary background music for game prototype mood communication"),
-        ("narrative_role", brief.narrative_role.value),
-        ("emotion", brief.emotion.value),
+        ("purpose", " ".join(brief.purpose.split())),
+        ("narrative_role", _narrative_role_value(brief)),
+        ("emotion", _emotion_value(brief)),
         ("textures", ", ".join(textures)),
         ("energy", f"{brief.energy:.2f}"),
         ("emotional_intensity", f"{brief.emotional_intensity:.2f}"),
@@ -31,6 +43,7 @@ def compose_prompt(brief: MusicBrief) -> PromptResponse:
         ("loop_requested", "yes" if brief.loop_requested else "no"),
         ("vocals", brief.vocals),
         ("avoid", ", ".join(avoid_terms)),
+        ("rationale", " ".join(brief.rationale.split())),
     ]
     prompt = "\n".join(f"{key}: {value}" for key, value in fields)
     return PromptResponse(prompt=" ".join(prompt.split()), warnings=warnings)

@@ -15,6 +15,7 @@ class NarrativeRole(str, Enum):
     loss = "loss"
     character_theme = "character-theme"
     transition = "transition"
+    other = "other"
 
 
 class Emotion(str, Enum):
@@ -27,6 +28,7 @@ class Emotion(str, Enum):
     frightening = "frightening"
     hopeful = "hopeful"
     ambiguous = "ambiguous"
+    other = "other"
 
 
 class Texture(str, Enum):
@@ -109,13 +111,28 @@ class ArtisticInference(BaseModel):
 
 
 class MusicBrief(ArtisticInference):
+    purpose: str = Field(
+        default="temporary background music for game prototype mood communication",
+        min_length=1,
+        max_length=240,
+    )
     vocals: Literal["disabled", "enabled"] = "disabled"
+    custom_narrative_role: str | None = Field(default=None, max_length=80)
+    custom_emotion: str | None = Field(default=None, max_length=80)
 
     @model_validator(mode="after")
     def validate_contradictions(self) -> "MusicBrief":
         if self.musical_arc == MusicalArc.loop_friendly and not self.loop_requested:
             raise ValueError("loop-friendly arc contradicts loop_requested=false.")
+        if self.narrative_role == NarrativeRole.other and not _has_text(self.custom_narrative_role):
+            raise ValueError("custom_narrative_role is required when narrative_role=other.")
+        if self.emotion == Emotion.other and not _has_text(self.custom_emotion):
+            raise ValueError("custom_emotion is required when emotion=other.")
         return self
+
+
+def _has_text(value: str | None) -> bool:
+    return bool(value and value.strip())
 
 
 class AnalysisResponse(BaseModel):

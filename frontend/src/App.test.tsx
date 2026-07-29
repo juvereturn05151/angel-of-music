@@ -103,6 +103,30 @@ describe("App", () => {
     expect(screen.getByLabelText("Emotion")).toHaveValue("heroic");
   });
 
+  it("requires custom narrative and emotion text for other categories", async () => {
+    installHappyFetch();
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.upload(
+      screen.getByLabelText("Scene image"),
+      new File(["x"], "scene.png", { type: "image/png" })
+    );
+    await user.click(screen.getByRole("button", { name: /Run Analysis/i }));
+
+    await user.selectOptions(await screen.findByLabelText("Narrative role"), "other");
+    await user.selectOptions(screen.getByLabelText("Emotion"), "other");
+
+    expect(await screen.findByText("Custom narrative role is required.")).toBeInTheDocument();
+    expect(screen.getByText("Custom emotion is required.")).toBeInTheDocument();
+
+    await user.type(screen.getByLabelText("Custom narrative role"), "quiet rivalry");
+    await user.type(screen.getByLabelText("Custom emotion"), "bittersweet wonder");
+
+    expect(screen.queryByText("Custom narrative role is required.")).not.toBeInTheDocument();
+    expect(screen.queryByText("Custom emotion is required.")).not.toBeInTheDocument();
+  });
+
   it("lets the user choose whether vocals are allowed", async () => {
     installHappyFetch();
     const user = userEvent.setup();
@@ -118,6 +142,24 @@ describe("App", () => {
     expect(vocals).toHaveValue("disabled");
     await user.selectOptions(vocals, "enabled");
     expect(vocals).toHaveValue("enabled");
+  });
+
+  it("lets the user edit the prompt purpose", async () => {
+    installHappyFetch();
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.upload(
+      screen.getByLabelText("Scene image"),
+      new File(["x"], "scene.png", { type: "image/png" })
+    );
+    await user.click(screen.getByRole("button", { name: /Run Analysis/i }));
+    const purpose = await screen.findByLabelText("Purpose");
+
+    await user.clear(purpose);
+    await user.type(purpose, "temporary village theme for a cozy quest hub");
+
+    expect(purpose).toHaveValue("temporary village theme for a cozy quest hub");
   });
 
   it("clears stale prompt data when the image changes", async () => {

@@ -9,7 +9,8 @@ export const narrativeRoles: NarrativeRole[] = [
   "victory",
   "loss",
   "character-theme",
-  "transition"
+  "transition",
+  "other"
 ];
 
 export const emotions: Emotion[] = [
@@ -21,7 +22,8 @@ export const emotions: Emotion[] = [
   "playful",
   "frightening",
   "hopeful",
-  "ambiguous"
+  "ambiguous",
+  "other"
 ];
 
 export const textures: Texture[] = [

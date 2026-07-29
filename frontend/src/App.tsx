@@ -21,6 +21,7 @@ import { useAudioPlayer } from "./useAudioPlayer";
 import "./styles.css";
 
 const emptyBrief: MusicBrief = {
+  purpose: "temporary background music for game prototype mood communication",
   narrative_role: "exploration",
   emotion: "peaceful",
   textures: ["warm"],
@@ -33,11 +34,19 @@ const emptyBrief: MusicBrief = {
   loop_requested: true,
   avoid_terms: ["vocals"],
   rationale: "",
-  vocals: "disabled"
+  vocals: "disabled",
+  custom_narrative_role: null,
+  custom_emotion: null
 };
 
 function toBrief(analysis: AnalysisResponse): MusicBrief {
-  return { ...analysis.inference, vocals: "disabled" };
+  return {
+    ...analysis.inference,
+    purpose: "temporary background music for game prototype mood communication",
+    vocals: "disabled",
+    custom_narrative_role: null,
+    custom_emotion: null
+  };
 }
 
 function toggleList<T extends string>(items: T[], value: T): T[] {
@@ -54,6 +63,13 @@ function validateBrief(brief: MusicBrief): string[] {
   if (brief.bpm < 40 || brief.bpm > 220) errors.push("BPM must be between 40 and 220.");
   if (brief.duration_seconds < 10 || brief.duration_seconds > 20) {
     errors.push("Duration must be between 10 and 20 seconds.");
+  }
+  if (!brief.purpose.trim()) errors.push("Purpose is required.");
+  if (brief.narrative_role === "other" && !brief.custom_narrative_role?.trim()) {
+    errors.push("Custom narrative role is required.");
+  }
+  if (brief.emotion === "other" && !brief.custom_emotion?.trim()) {
+    errors.push("Custom emotion is required.");
   }
   if (brief.musical_arc === "loop-friendly" && !brief.loop_requested) {
     errors.push("Loop-friendly arc conflicts with loop request turned off.");
@@ -311,6 +327,13 @@ export function App() {
           <section className="panel wide">
             <h2>3. Editable Music Brief</h2>
             <div className="formGrid">
+              <label className="spanTwo">
+                Purpose
+                <input
+                  value={brief.purpose}
+                  onChange={(event) => updateBrief({ ...brief, purpose: event.target.value })}
+                />
+              </label>
               <label>
                 Narrative role
                 <select
@@ -318,7 +341,9 @@ export function App() {
                   onChange={(event) =>
                     updateBrief({
                       ...brief,
-                      narrative_role: event.target.value as MusicBrief["narrative_role"]
+                      narrative_role: event.target.value as MusicBrief["narrative_role"],
+                      custom_narrative_role:
+                        event.target.value === "other" ? brief.custom_narrative_role ?? "" : null
                     })
                   }
                 >
@@ -327,12 +352,27 @@ export function App() {
                   ))}
                 </select>
               </label>
+              {brief.narrative_role === "other" ? (
+                <label>
+                  Custom narrative role
+                  <input
+                    value={brief.custom_narrative_role ?? ""}
+                    onChange={(event) =>
+                      updateBrief({ ...brief, custom_narrative_role: event.target.value })
+                    }
+                  />
+                </label>
+              ) : null}
               <label>
                 Emotion
                 <select
                   value={brief.emotion}
                   onChange={(event) =>
-                    updateBrief({ ...brief, emotion: event.target.value as MusicBrief["emotion"] })
+                    updateBrief({
+                      ...brief,
+                      emotion: event.target.value as MusicBrief["emotion"],
+                      custom_emotion: event.target.value === "other" ? brief.custom_emotion ?? "" : null
+                    })
                   }
                 >
                   {emotions.map((item) => (
@@ -340,6 +380,15 @@ export function App() {
                   ))}
                 </select>
               </label>
+              {brief.emotion === "other" ? (
+                <label>
+                  Custom emotion
+                  <input
+                    value={brief.custom_emotion ?? ""}
+                    onChange={(event) => updateBrief({ ...brief, custom_emotion: event.target.value })}
+                  />
+                </label>
+              ) : null}
               <label>
                 BPM
                 <input

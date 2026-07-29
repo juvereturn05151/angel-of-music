@@ -30,6 +30,9 @@ def make_brief(vocals: str = "disabled") -> MusicBrief:
             "avoid_terms": ["vocals"],
             "rationale": "test",
             "vocals": vocals,
+            "purpose": "temporary background music for game prototype mood communication",
+            "custom_narrative_role": None,
+            "custom_emotion": None,
         }
     )
 

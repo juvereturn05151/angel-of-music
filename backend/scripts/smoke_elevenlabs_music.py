@@ -56,6 +56,9 @@ def main() -> int:
             ),
             "rationale": "Manual smoke test for instrumental background music.",
             "vocals": args.vocals,
+            "purpose": "temporary background music for game prototype mood communication",
+            "custom_narrative_role": None,
+            "custom_emotion": None,
         }
     )
     prompt = compose_prompt(brief).prompt
