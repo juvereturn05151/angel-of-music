@@ -57,12 +57,6 @@ export async function fetchJob(jobId: string): Promise<GenerationJob> {
   return parseJson<GenerationJob>(await fetch(`${API_BASE}/api/jobs/${jobId}`));
 }
 
-export async function fetchProvenance(trackId: string): Promise<Record<string, unknown>> {
-  return parseJson<Record<string, unknown>>(
-    await fetch(`${API_BASE}/api/tracks/${trackId}/provenance`)
-  );
-}
-
 export function audioUrl(path: string): string {
   return `${API_BASE}${path}`;
 }

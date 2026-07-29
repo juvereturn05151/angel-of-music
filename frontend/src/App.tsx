@@ -5,7 +5,6 @@ import {
   audioUrl,
   composePrompt,
   fetchJob,
-  fetchProvenance,
   startGeneration
 } from "./api";
 import type { AnalysisResponse, GenerationJob, MusicBrief } from "./types";
@@ -113,11 +112,8 @@ export function App() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [analysis, setAnalysis] = useState<AnalysisResponse | null>(null);
   const [brief, setBrief] = useState<MusicBrief>(emptyBrief);
-  const [prompt, setPrompt] = useState("");
-  const [promptWarnings, setPromptWarnings] = useState<string[]>([]);
   const [job, setJob] = useState<GenerationJob | null>(null);
-  const [provenance, setProvenance] = useState<Record<string, unknown> | null>(null);
-  const [status, setStatus] = useState<"idle" | "analyzing" | "prompting" | "generating">("idle");
+  const [status, setStatus] = useState<"idle" | "analyzing" | "generating">("idle");
   const [error, setError] = useState<string | null>(null);
 
   const validationErrors = useMemo(() => validateBrief(brief), [brief]);
@@ -138,7 +134,6 @@ export function App() {
         const nextJob = await fetchJob(job.job_id);
         setJob(nextJob);
         if (nextJob.status === "complete" && nextJob.track) {
-          setProvenance(await fetchProvenance(nextJob.track.track_id));
           setStatus("idle");
         }
         if (nextJob.status === "failed") {
@@ -156,19 +151,13 @@ export function App() {
   function clearDownstreamState() {
     setAnalysis(null);
     setBrief(emptyBrief);
-    setPrompt("");
-    setPromptWarnings([]);
     setJob(null);
-    setProvenance(null);
     setError(null);
   }
 
   function updateBrief(nextBrief: MusicBrief) {
     setBrief(nextBrief);
-    setPrompt("");
-    setPromptWarnings([]);
     setJob(null);
-    setProvenance(null);
     setError(null);
   }
 
@@ -187,8 +176,6 @@ export function App() {
       const result = await analyzeImage(selectedFile);
       setAnalysis(result);
       setBrief(toBrief(result));
-      setPrompt("");
-      setPromptWarnings([]);
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "Image analysis failed.");
     } finally {
@@ -196,35 +183,20 @@ export function App() {
     }
   }
 
-  async function previewPrompt() {
-    setStatus("prompting");
-    setError(null);
-    try {
-      const result = await composePrompt(brief);
-      setPrompt(result.prompt);
-      setPromptWarnings(result.warnings);
-    } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "Prompt composition failed.");
-    } finally {
-      setStatus("idle");
-    }
-  }
-
   async function generateTrack() {
-    if (!analysis || validationErrors.length || !prompt) return;
+    if (!analysis || validationErrors.length) return;
     setStatus("generating");
     setError(null);
-    setProvenance(null);
     try {
+      const promptResponse = await composePrompt(brief);
       const nextJob = await startGeneration({
         imageHash: analysis.observation.image_hash,
         analysisId: analysis.analysis_id,
         brief,
-        prompt
+        prompt: promptResponse.prompt
       });
       setJob(nextJob);
       if (nextJob.status === "complete" && nextJob.track) {
-        setProvenance(await fetchProvenance(nextJob.track.track_id));
         setStatus("idle");
       }
     } catch (caught) {
@@ -376,23 +348,8 @@ export function App() {
         ) : null}
 
         {analysis ? (
-          <section className="panel wide">
-            <h2>4. Deterministic Prompt</h2>
-            <button disabled={status === "prompting" || validationErrors.length > 0} onClick={previewPrompt}>
-              {status === "prompting" ? "Composing..." : "Preview Prompt"}
-            </button>
-            {prompt ? <pre>{prompt}</pre> : <p className="note">Prompt preview waits for your approved brief.</p>}
-            {promptWarnings.map((warning) => (
-              <p className="warning" key={warning}>
-                {warning}
-              </p>
-            ))}
-          </section>
-        ) : null}
-
-        {prompt ? (
           <section className="panel">
-            <h2>5. Generation Job</h2>
+            <h2>4. Generation Job</h2>
             <button disabled={status === "generating" || validationErrors.length > 0} onClick={generateTrack}>
               {status === "generating" ? "Starting..." : "Generate Track"}
             </button>
@@ -407,13 +364,6 @@ export function App() {
 
         {trackSrc && job ? (
           <AudioPlayer downloadName={trackDownloadName(job)} src={trackSrc} />
-        ) : null}
-
-        {provenance ? (
-          <section className="panel wide">
-            <h2>Provenance And Limitations</h2>
-            <pre>{JSON.stringify(provenance, null, 2)}</pre>
-          </section>
         ) : null}
 
         {error ? <p className="error">{error}</p> : null}

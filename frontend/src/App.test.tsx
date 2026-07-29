@@ -71,9 +71,6 @@ function installHappyFetch() {
       return jsonResponse({ prompt: "vocals: disabled bpm: 84", warnings: [] });
     }
     if (url.includes("/api/generate")) return jsonResponse(job);
-    if (url.includes("/api/tracks/track-1/provenance")) {
-      return jsonResponse({ schema_version: "1.0", image_hash: "a".repeat(64) });
-    }
     return jsonResponse({});
   }) as typeof fetch;
 }
@@ -139,7 +136,7 @@ describe("App", () => {
     expect(purpose).toHaveValue("temporary village theme for a cozy quest hub");
   });
 
-  it("clears stale prompt data when the image changes", async () => {
+  it("clears stale track data when the image changes", async () => {
     installHappyFetch();
     const user = userEvent.setup();
     render(<App />);
@@ -149,15 +146,15 @@ describe("App", () => {
       new File(["x"], "scene.png", { type: "image/png" })
     );
     await user.click(screen.getByRole("button", { name: /Run Analysis/i }));
-    await user.click(await screen.findByRole("button", { name: /Preview Prompt/i }));
-    expect(await screen.findByText(/vocals: disabled/)).toBeInTheDocument();
+    await user.click(await screen.findByRole("button", { name: /Generate Track/i }));
+    expect(await screen.findByText("Track Result")).toBeInTheDocument();
 
     await user.upload(
       screen.getByLabelText("Scene image"),
       new File(["y"], "second.png", { type: "image/png" })
     );
 
-    expect(screen.queryByText(/vocals: disabled/)).not.toBeInTheDocument();
+    expect(screen.queryByText("Track Result")).not.toBeInTheDocument();
   });
 
   it("generates a completed track and plays without duplicate play calls", async () => {
@@ -170,7 +167,6 @@ describe("App", () => {
       new File(["x"], "scene.png", { type: "image/png" })
     );
     await user.click(screen.getByRole("button", { name: /Run Analysis/i }));
-    await user.click(await screen.findByRole("button", { name: /Preview Prompt/i }));
     await user.click(await screen.findByRole("button", { name: /Generate Track/i }));
 
     expect(await screen.findByText("Track Result")).toBeInTheDocument();

@@ -4,8 +4,7 @@ Angel of Music is a full-stack portfolio project for game designers who need tem
 background music to communicate a scene's intended mood during early prototyping.
 
 The app is human-in-the-loop: upload a scene image, inspect visual observations, edit the
-music brief, preview the deterministic prompt, generate a short track, play it in the
-browser, and download the result.
+music brief, generate a short track, play it in the browser, and download the result.
 
 ## Current Features
 
@@ -16,15 +15,15 @@ browser, and download the result.
 - Optional Hugging Face vision analysis using `google/gemma-3-4b-it`.
 - Simplified editable music brief with purpose, mood overview, BPM, duration, loop,
   and vocals.
-- Deterministic prompt preview that includes only the user-facing brief fields.
+- Behind-the-scenes deterministic prompt composition from the user-facing brief fields.
 - Mock audio fallback for free local testing.
 - Optional ElevenLabs Eleven Music v2 generation.
 - Vocal control: no vocals forces instrumental-only output; allow vocals permits vocal
   generation when the provider supports it.
 - Background generation jobs with status polling.
 - Browser playback and generated-track download.
-- Provenance output for prompt, provider, model, duration, format, latency, warnings,
-  limitations, and audio hash.
+- Backend provenance records for prompt, provider, model, duration, format, latency,
+  warnings, limitations, and audio hash.
 
 ## Repository Layout
 
