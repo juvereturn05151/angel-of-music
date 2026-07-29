@@ -13,7 +13,7 @@ import { useAudioPlayer } from "./useAudioPlayer";
 import "./styles.css";
 
 const emptyBrief: MusicBrief = {
-  purpose: "temporary background music for game prototype mood communication",
+  purpose: "temporary background music for prototype mood communication",
   narrative_role: "exploration",
   emotion: "peaceful",
   textures: ["warm"],
@@ -34,7 +34,7 @@ const emptyBrief: MusicBrief = {
 function toBrief(analysis: AnalysisResponse): MusicBrief {
   return {
     ...analysis.inference,
-    purpose: "temporary background music for game prototype mood communication",
+    purpose: "temporary background music for prototype mood communication",
     vocals: "disabled",
     custom_narrative_role: null,
     custom_emotion: null
@@ -209,7 +209,7 @@ export function App() {
     <main className="shell">
       <header className="masthead">
         <div>
-          <p className="eyebrow">Human-in-the-loop game audio prototype</p>
+          <p className="eyebrow">Human-in-the-loop audio prototype</p>
           <h1>Angel of Music</h1>
           <p>
             Upload a scene image, inspect visual observations, edit the artistic brief, and
@@ -365,6 +365,20 @@ export function App() {
         {trackSrc && job ? (
           <AudioPlayer downloadName={trackDownloadName(job)} src={trackSrc} />
         ) : null}
+
+        <section className="panel wide creditPanel">
+          <h2>Credit And Disclaimer</h2>
+          <p>
+            Created by Juvetic. AI support can include Hugging Face
+            <span> google/gemma-3-4b-it</span> for visual analysis and ElevenLabs Eleven Music v2
+            for generated music.
+          </p>
+          <p>
+            Angel of Music is a quick prototyping tool for communicating mood during early product
+            design. It is not meant to replace a sound composer, music designer, or licensed
+            production soundtrack workflow.
+          </p>
+        </section>
 
         {error ? <p className="error">{error}</p> : null}
       </section>

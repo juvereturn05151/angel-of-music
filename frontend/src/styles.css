@@ -188,6 +188,18 @@ pre {
   gap: 1rem;
 }
 
+.creditPanel {
+  color: #46504c;
+}
+
+.creditPanel h2 {
+  color: #18201f;
+}
+
+.creditPanel p {
+  max-width: 920px;
+}
+
 .error,
 .warning,
 .status,

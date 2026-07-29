@@ -22,6 +22,7 @@ music brief, generate a short track, play it in the browser, and download the re
   generation when the provider supports it.
 - Background generation jobs with status polling.
 - Browser playback and generated-track download.
+- In-app creator credit, AI provider note, and prototype-use disclaimer.
 - Backend provenance records for prompt, provider, model, duration, format, latency,
   warnings, limitations, and audio hash.
 

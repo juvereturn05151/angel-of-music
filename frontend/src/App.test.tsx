@@ -82,6 +82,8 @@ describe("App", () => {
     expect(screen.getByRole("heading", { name: "Angel of Music" })).toBeInTheDocument();
     expect(screen.getByLabelText("Scene image")).toBeInTheDocument();
     expect(screen.getByText(/Human-reviewed analysis/i)).toBeInTheDocument();
+    expect(screen.getByText(/Created by Juvetic/i)).toBeInTheDocument();
+    expect(screen.getByText(/not meant to replace a sound composer/i)).toBeInTheDocument();
   });
 
   it("analyzes an image and lets the user edit the mood overview", async () => {
